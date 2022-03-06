@@ -1,3 +1,4 @@
+mod animation_interpolation;
 mod animation;
 mod attachment;
 mod bone_keyframe;
@@ -10,4 +11,7 @@ mod skeleton;
 mod skin;
 mod slot_keyframe;
 mod slot;
+mod spine_manager;
+mod spine_model;
+mod spine_parser;
 mod transform_constraint;
