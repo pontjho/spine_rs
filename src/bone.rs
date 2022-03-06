@@ -1,3 +1,6 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Bone
 {
 
@@ -14,6 +17,7 @@ pub struct Bone
     pub shear_y: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum BoneTransform
 {
     Normal,

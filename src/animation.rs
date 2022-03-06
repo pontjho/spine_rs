@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 use crate::bone_keyframe::BoneKeyFrame;
 
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Animation
 {
     bones: HashMap<String, BoneKeyFrame>,

@@ -1,5 +1,8 @@
 use crate::animation_interpolation::AnimationInterpolation;
 
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoneKeyFrame
 {
     pub rotate: Option<BoneRotateKeyFrame>,
@@ -16,6 +19,7 @@ pub struct BoneKeyFrame
 //     Shear
 // }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoneRotateKeyFrame
 {
     pub time: f32,
@@ -23,6 +27,7 @@ pub struct BoneRotateKeyFrame
     pub angle: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoneTranslateKeyFrame
 {
     pub time: f32,
@@ -31,6 +36,7 @@ pub struct BoneTranslateKeyFrame
     pub y: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoneScaleKeyFrame
 {
     pub time: f32,
@@ -39,6 +45,7 @@ pub struct BoneScaleKeyFrame
     pub y: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoneShearKeyFrame
 {
     pub time: f32,

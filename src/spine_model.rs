@@ -5,6 +5,9 @@ use crate::slot::Slot;
 use crate::skin::Skin;
 use std::collections::HashMap;
 
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct SpineModel
 {
     pub skeleton: Skeleton,

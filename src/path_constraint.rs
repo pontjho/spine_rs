@@ -1,3 +1,6 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PathConstraint
 {
     pub name: String,
@@ -15,12 +18,14 @@ pub struct PathConstraint
     pub translate_mix: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum PathConstraintPositionMode
 {
     Fixed,
     Percent
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum PathConstraintSpacingMode
 {
     Length,
@@ -28,6 +33,7 @@ pub enum PathConstraintSpacingMode
     Percent
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum PathConstraintRotateMode
 {
     Tangent,

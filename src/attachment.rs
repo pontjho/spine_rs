@@ -1,9 +1,13 @@
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Attachment
 {
     pub name: String,
     pub attachment_type: AttachmentType
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum AttachmentType
 {
     Region(RegionAttachment),
@@ -15,6 +19,7 @@ pub enum AttachmentType
     Clipping(ClippingAttachment)
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RegionAttachment
 {
     pub path: String,
@@ -28,6 +33,7 @@ pub struct RegionAttachment
     pub color: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct MeshAttachment
 {
     pub path: String,
@@ -41,6 +47,7 @@ pub struct MeshAttachment
     pub height: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct LinkedMeshAttachment
 {
     pub path: String,
@@ -52,6 +59,7 @@ pub struct LinkedMeshAttachment
     pub height: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoundingBoxAttachment
 {
     pub vertex_count: String,
@@ -59,6 +67,7 @@ pub struct BoundingBoxAttachment
     pub color: String
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PathAttachment
 {
     pub closed: bool,
@@ -69,6 +78,7 @@ pub struct PathAttachment
     pub color: bool
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PointAttachment
 {
     pub x: f32,
@@ -77,6 +87,7 @@ pub struct PointAttachment
     pub color: f32
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ClippingAttachment
 {
     pub end: String,
