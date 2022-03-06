@@ -11,7 +11,7 @@ pub struct Slot
     #[serde(default="ffffffff")]
     pub color: u32,
     pub dark: Option<u32>,
-    pub attachment: String,
+    pub attachment: Option<String>,
 
     #[serde(default)]
     pub blend: SlotBlendType

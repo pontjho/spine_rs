@@ -5,7 +5,7 @@ use serde::{Serialize, Deserialize};
 pub struct Skeleton
 {
     pub hash: String,
-    pub version: String,
+    pub version: Option<String>,
     #[serde(default)]
     pub x: f32,
     #[serde(default)]

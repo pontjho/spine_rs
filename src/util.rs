@@ -7,3 +7,8 @@ pub fn ffffffff() -> u32
 {
     0xFFFFFFFF
 }
+
+pub fn troo() -> bool
+{
+    true
+}

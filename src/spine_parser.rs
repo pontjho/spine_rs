@@ -1,19 +1,21 @@
-use crate::skeleton::Skeleton;
+use crate::spine_model::SpineModel;
 
 pub trait SpineParser
 {
-    fn parse(data: &str) -> Result<Skeleton, String>;
+    fn parse(&self, data: &str) -> Result<SpineModel, String>;
 }
 
-struct ConcreteSpineParser
+pub struct ConcreteSpineParser
 {
 
 }
 
 impl SpineParser for ConcreteSpineParser
 {
-    fn parse(data: &str) -> Result<Skeleton, String>
+    fn parse(&self, data: &str) -> Result<SpineModel, String>
     {
-        Err("Not implemented".to_string())
+        let p: SpineModel = serde_json::from_str(data).unwrap();
+
+        Ok(p)
     }
 }
