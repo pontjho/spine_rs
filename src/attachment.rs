@@ -2,6 +2,7 @@ use serde::{Serialize, Deserialize};
 use crate::util::one;
 use crate::util::ffffffff;
 use crate::util::troo;
+use crate::util::deserialize_colour;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
@@ -13,12 +14,14 @@ pub struct Attachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+//#[serde(tag="type")]
 #[serde(untagged)]
 pub enum AttachmentType
 {
     Region(RegionAttachment),
     Mesh(MeshAttachment),
     LinkedMesh(LinkedMeshAttachment),
+    #[serde(alias = "boundingbox")]
     BoundingBox(BoundingBoxAttachment),
     Path(PathAttachment),
     Point(PointAttachment),
@@ -37,7 +40,7 @@ pub enum AttachmentType
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct RegionAttachment
 {
-    pub path: String,
+    pub path: Option<String>,
 
     #[serde(default)]
     pub x: f32,
@@ -56,7 +59,7 @@ pub struct RegionAttachment
     pub width: f32,
     pub height: f32,
 
-    #[serde(default="ffffffff")]
+    #[serde(default="ffffffff", deserialize_with="deserialize_colour")]
     pub color: u32
 }
 
@@ -71,7 +74,7 @@ pub struct MeshAttachment
     pub hull: String,
     pub edges: String,
 
-    #[serde(default="ffffffff")]
+    #[serde(default="ffffffff", deserialize_with="deserialize_colour")]
     pub color: u32
 }
 
@@ -84,7 +87,7 @@ pub struct LinkedMeshAttachment
     pub parent: String,
     pub deform: String,
 
-    #[serde(default="ffffffff")]
+    #[serde(default="ffffffff", deserialize_with="deserialize_colour")]
     pub color: u32
 }
 
@@ -92,10 +95,11 @@ pub struct LinkedMeshAttachment
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoundingBoxAttachment
 {
+    #[serde(alias = "vertexCount")]
     pub vertex_count: usize,
     pub vertices: Vec<f32>,
 
-    #[serde(default="ffffffff")]
+    #[serde(default="ffffffff", deserialize_with="deserialize_colour")]
     pub color: u32
 }
 

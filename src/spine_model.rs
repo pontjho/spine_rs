@@ -14,6 +14,6 @@ pub struct SpineModel
     pub skeleton: Skeleton,
     pub bones: Vec<Bone>,
     pub slots: Vec<Slot>,
-    pub skins: HashMap<String, Skin>,
+    pub skins: Vec<Skin>,
     pub animations: HashMap<String, Animation>
 }
