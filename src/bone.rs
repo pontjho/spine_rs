@@ -1,19 +1,40 @@
 use serde::{Serialize, Deserialize};
+use crate::util::one;
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Bone
 {
-
     pub name: String,
+
+    #[serde(default)]
     pub length: f32,
+
+    #[serde(default)]
     pub transform: BoneTransform,
+
+    #[serde(default)]
     pub skin: bool,
+
+    #[serde(default)]
     pub x: f32,
+
+    #[serde(default)]
     pub y: f32,
+
+    #[serde(default)]
     pub rotation: f32,
+
+    #[serde(default="one")]
     pub scale_x: f32,
+
+    #[serde(default="one")]
     pub scale_y: f32,
+
+    #[serde(default)]
     pub shear_x: f32,
+
+    #[serde(default)]
     pub shear_y: f32
 }
 
@@ -25,4 +46,12 @@ pub enum BoneTransform
     NoRotationOrReflection,
     NoScale,
     NoScaleOrReflection
+}
+
+impl Default for BoneTransform
+{
+    fn default() -> Self
+    {
+        BoneTransform::Normal
+    }
 }

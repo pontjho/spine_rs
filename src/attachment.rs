@@ -1,9 +1,11 @@
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Attachment
 {
     pub name: String,
+    #[serde(alias = "type")]
     pub attachment_type: AttachmentType
 }
 
@@ -20,6 +22,7 @@ pub enum AttachmentType
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct RegionAttachment
 {
     pub path: String,
@@ -34,6 +37,7 @@ pub struct RegionAttachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct MeshAttachment
 {
     pub path: String,
@@ -48,6 +52,7 @@ pub struct MeshAttachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct LinkedMeshAttachment
 {
     pub path: String,
@@ -60,6 +65,7 @@ pub struct LinkedMeshAttachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoundingBoxAttachment
 {
     pub vertex_count: String,
@@ -68,6 +74,7 @@ pub struct BoundingBoxAttachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct PathAttachment
 {
     pub closed: bool,
@@ -79,6 +86,7 @@ pub struct PathAttachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct PointAttachment
 {
     pub x: f32,
@@ -88,6 +96,7 @@ pub struct PointAttachment
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct ClippingAttachment
 {
     pub end: String,

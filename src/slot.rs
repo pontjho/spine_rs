@@ -1,13 +1,19 @@
 use serde::{Serialize, Deserialize};
+use crate::util::ffffffff;
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Slot
 {
     pub name: String,
     pub bone: String,
-    pub color: f32,
-    pub dark: String,
+
+    #[serde(default="ffffffff")]
+    pub color: u32,
+    pub dark: Option<u32>,
     pub attachment: String,
+
+    #[serde(default)]
     pub blend: SlotBlendType
 }
 
@@ -18,4 +24,12 @@ pub enum SlotBlendType
     Additive,
     Multiply,
     Screen
+}
+
+impl Default for SlotBlendType
+{
+    fn default() -> Self
+    {
+        SlotBlendType::Normal
+    }
 }
