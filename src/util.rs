@@ -19,7 +19,6 @@ pub fn deserialize_colour<'de, D>(deserializer: D) -> Result<u32, D::Error> wher
 {
     let s = String::deserialize(deserializer).unwrap();
     let val = u32::from_str_radix(&s, 16).unwrap();
-    let val_adjusted = if s.len() == 6 { (val >> 2) | 0xFF } else { val };
-    //Utc.datetime_from_str(&s, FORMAT).map_err(serde::de::Error::custom)
-    Ok(val)
+    let val_adjusted = if s.len() == 6 { (val << 2) | 0xFF } else { val };
+    Ok(val_adjusted)
 }
