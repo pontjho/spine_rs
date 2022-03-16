@@ -17,5 +17,8 @@ fn main() {
     {
         let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, "translate_test", "default");
         println!("{:?}", attachments);
+
+        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, "rotate_test", "default");
+        println!("{:?}", attachments);
     }
 }

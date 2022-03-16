@@ -34,6 +34,7 @@ pub struct BoneRotateKeyFrame
     // #[serde(default, deserialize_with="deserialize_animation_interpolation")]
     // pub curve: AnimationInterpolation,
     #[serde(default)]
+    #[serde(alias = "value")]
     pub angle: f32
 }
 
