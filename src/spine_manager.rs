@@ -10,6 +10,8 @@ use cgmath::Vector2;
 use cgmath::Matrix3;
 use std::collections::HashMap;
 use crate::bone_keyframe::BoneTranslateKeyFrame;
+use crate::bone_keyframe::BoneRotateKeyFrame;
+use cgmath::Rad;
 
 pub trait SpineManager
 {
@@ -87,7 +89,6 @@ pub struct ModelImage
 
 pub trait Interpolatable
 {
-    // type Value: std::ops::Mul<f32>::Output = Self::Value + std::ops::Add;
     type Value: std::ops::Mul<f32, Output = Self::Value> + std::ops::Add<Self::Value, Output = Self::Value> + core::fmt::Debug;
 
     fn time(&self) -> f32;
@@ -106,6 +107,21 @@ impl Interpolatable for BoneTranslateKeyFrame
     fn get_value(&self) -> Self::Value
     {
         self.get_translation()
+    }
+}
+
+impl Interpolatable for BoneRotateKeyFrame
+{
+    type Value = Rad<f32>;
+
+    fn time(&self) -> f32
+    {
+        self.time
+    }
+
+    fn get_value(&self) -> Self::Value
+    {
+        cgmath::Deg(self.angle).into()
     }
 }
 
@@ -146,18 +162,19 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
             .map(|BoneKeyFrame { rotate: rotations, translate: translations, scale: scales, shear: shears }| {
                 let rotation = if rotations.len() > 0
                 {
-                    let rotation_far_index = rotations.iter().enumerate().filter(|(_, v)| v.time <= time).count();
-                    let rotation_near_index = if rotation_far_index == 0 { 0 } else { rotation_far_index - 1 };
-                    let ref near_rotation = rotations[rotation_near_index];
-                    let ref far_rotation = rotations[rotation_far_index];
-                    let near_angle = near_rotation.angle;
-                    let far_angle = far_rotation.angle;
-                    let interval_length = far_rotation.time - near_rotation.time;
-                    let normalised_time = time - near_rotation.time;
-                    let near_rotation_weight = normalised_time / interval_length;
-                    let far_rotation_weight = 1.0 - near_rotation_weight;
-                    let rotation_deg = near_angle * near_rotation_weight + far_angle * far_rotation_weight;
-                    cgmath::Deg(rotation_deg).into()
+                    // let rotation_far_index = rotations.iter().enumerate().filter(|(_, v)| v.time <= time).count();
+                    // let rotation_near_index = if rotation_far_index == 0 { 0 } else { rotation_far_index - 1 };
+                    // let ref near_rotation = rotations[rotation_near_index];
+                    // let ref far_rotation = rotations[rotation_far_index];
+                    // let near_angle = near_rotation.angle;
+                    // let far_angle = far_rotation.angle;
+                    // let interval_length = far_rotation.time - near_rotation.time;
+                    // let normalised_time = time - near_rotation.time;
+                    // let near_rotation_weight = normalised_time / interval_length;
+                    // let far_rotation_weight = 1.0 - near_rotation_weight;
+                    // let rotation_deg = near_angle * near_rotation_weight + far_angle * far_rotation_weight;
+                    // cgmath::Deg(rotation_deg).into()
+                    interpolate(time, rotations)
                 }
                 else
                 {
