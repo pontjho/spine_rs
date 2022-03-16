@@ -9,6 +9,7 @@ use cgmath::prelude::*;
 use cgmath::Vector2;
 use cgmath::Matrix3;
 use std::collections::HashMap;
+use crate::bone_keyframe::BoneTranslateKeyFrame;
 
 pub trait SpineManager
 {
@@ -84,6 +85,59 @@ pub struct ModelImage
     pub texture_name: String
 }
 
+pub trait Interpolatable
+{
+    // type Value: std::ops::Mul<f32>::Output = Self::Value + std::ops::Add;
+    type Value: std::ops::Mul<f32, Output = Self::Value> + std::ops::Add<Self::Value, Output = Self::Value> + core::fmt::Debug;
+
+    fn time(&self) -> f32;
+    fn get_value(&self) -> Self::Value;
+}
+
+impl Interpolatable for BoneTranslateKeyFrame
+{
+    type Value = Vector2<f32>;
+
+    fn time(&self) -> f32
+    {
+        self.time
+    }
+
+    fn get_value(&self) -> Self::Value
+    {
+        self.get_translation()
+    }
+}
+
+fn interpolate<T>(time: f32, items: &Vec<T>) -> T::Value where T: Interpolatable, T: core::fmt::Debug//, R: std::ops::Mul<f32>
+{
+    let translation_far_index = items.iter().filter(|v| v.time() <= time).count();
+    let translation_far_index = if translation_far_index == items.len() { translation_far_index - 1 } else { translation_far_index };
+    let translation_near_index = if translation_far_index == 0 { 0 } else { translation_far_index - 1 };
+    let ref near_translation = items[translation_near_index];
+    let ref far_translation = items[translation_far_index];
+    let near_position = near_translation.get_value();
+    let far_position = far_translation.get_value();
+
+    let translation = if translation_far_index == translation_near_index
+    {
+        println!("time: {}\r\n {:#?}", time, items);
+        near_position
+    }
+    else
+    {
+        let interval_length = far_translation.time() - near_translation.time();
+        let normalised_time = time - near_translation.time();
+        let far_translation_weight = normalised_time / interval_length;
+        let near_translation_weight = 1.0 - far_translation_weight;
+        let t = near_position * near_translation_weight + far_position * far_translation_weight;
+        println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, items);
+        t
+    };
+
+    translation
+}
+
 impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 {
     fn get_bone_transform(&self, bone: &Bone, animation: &Animation, time: f32) -> Matrix3<f32>
@@ -112,31 +166,32 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 
                 let translation = if translations.len() > 0
                 {
-                    let translation_far_index = translations.iter().filter(|v| v.time <= time).count();
-                    let translation_far_index = if translation_far_index == translations.len() { translation_far_index - 1 } else { translation_far_index };
-                    let translation_near_index = if translation_far_index == 0 { 0 } else { translation_far_index - 1 };
-                    let ref near_translation = translations[translation_near_index];
-                    let ref far_translation = translations[translation_far_index];
-                    let near_position = near_translation.get_translation();
-                    let far_position = far_translation.get_translation();
+                    interpolate(time, translations)
+                    // let translation_far_index = translations.iter().filter(|v| v.time <= time).count();
+                    // let translation_far_index = if translation_far_index == translations.len() { translation_far_index - 1 } else { translation_far_index };
+                    // let translation_near_index = if translation_far_index == 0 { 0 } else { translation_far_index - 1 };
+                    // let ref near_translation = translations[translation_near_index];
+                    // let ref far_translation = translations[translation_far_index];
+                    // let near_position = near_translation.get_translation();
+                    // let far_position = far_translation.get_translation();
 
-                    let translation = if near_position == far_position
-                    {
-                        println!("time: {}\r\n {:#?}", time, translations);
-                        near_position
-                    }
-                    else
-                    {
-                        let interval_length = far_translation.time - near_translation.time;
-                        let normalised_time = time - near_translation.time;
-                        let far_translation_weight = normalised_time / interval_length;
-                        let near_translation_weight = 1.0 - far_translation_weight;
-                        let t = near_position * near_translation_weight + far_position * far_translation_weight;
-                        println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, translations);
-                        t
-                    };
+                    // let translation = if near_position == far_position
+                    // {
+                    //     println!("time: {}\r\n {:#?}", time, translations);
+                    //     near_position
+                    // }
+                    // else
+                    // {
+                    //     let interval_length = far_translation.time - near_translation.time;
+                    //     let normalised_time = time - near_translation.time;
+                    //     let far_translation_weight = normalised_time / interval_length;
+                    //     let near_translation_weight = 1.0 - far_translation_weight;
+                    //     let t = near_position * near_translation_weight + far_position * far_translation_weight;
+                    //     println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, translations);
+                    //     t
+                    // };
 
-                    translation
+                    // translation
                 }
                 else
                 {
