@@ -7,7 +7,8 @@ use serde::{Serialize, Deserialize};
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Animation
 {
-    bones: HashMap<String, BoneKeyFrame>,
+    #[serde(default)]
+    pub bones: HashMap<String, BoneKeyFrame>,
     // slots: HashMap<String, SlotKeyFrame>,
     //ik: HashMap<String, BoneKeyFrame>,
     //deform: HashMap<String, BoneKeyFrame>,

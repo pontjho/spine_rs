@@ -3,6 +3,7 @@ pub mod animation;
 pub mod attachment;
 pub mod bone_keyframe;
 pub mod bone;
+pub mod cgmath_integration;
 pub mod draw_order_keyframe;
 pub mod event;
 pub mod ik_constraint;

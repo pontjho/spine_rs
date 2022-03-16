@@ -1,0 +1,14 @@
+{
+"skeleton": { "hash": "VUR13Fu7Ap8", "spine": "4.0.61" },
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone", "parent": "root", "length": 50 }
+],
+"animations": {
+	"combo_test": {},
+	"rotate_test": {},
+	"scale_test": {},
+	"shear_test": {},
+	"translate_test": {}
+}
+}

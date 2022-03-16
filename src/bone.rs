@@ -6,6 +6,8 @@ use crate::util::one;
 pub struct Bone
 {
     pub name: String,
+    
+    pub parent: Option<String>,
 
     #[serde(default)]
     pub length: f32,

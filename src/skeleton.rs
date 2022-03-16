@@ -10,6 +10,6 @@ pub struct Skeleton
     pub x: f32,
     #[serde(default)]
     pub y: f32,
-    pub width: f32,
-    pub height: f32
+    pub width: Option<f32>,
+    pub height: Option<f32>
 }

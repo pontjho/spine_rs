@@ -13,7 +13,7 @@ pub struct Attachment
     pub attachment_type: AttachmentType
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 //#[serde(tag="type")]
 #[serde(untagged)]
 pub enum AttachmentType
@@ -36,7 +36,7 @@ pub enum AttachmentType
 //     }
 // }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct RegionAttachment
 {
@@ -63,7 +63,7 @@ pub struct RegionAttachment
     pub color: u32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct MeshAttachment
 {
@@ -78,7 +78,7 @@ pub struct MeshAttachment
     pub color: u32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct LinkedMeshAttachment
 {
@@ -91,7 +91,7 @@ pub struct LinkedMeshAttachment
     pub color: u32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoundingBoxAttachment
 {
@@ -103,7 +103,7 @@ pub struct BoundingBoxAttachment
     pub color: u32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct PathAttachment
 {
@@ -116,7 +116,7 @@ pub struct PathAttachment
     pub vertices: bool
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct PointAttachment
 {
@@ -125,7 +125,7 @@ pub struct PointAttachment
     pub rotation: f32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct ClippingAttachment
 {

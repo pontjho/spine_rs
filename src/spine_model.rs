@@ -13,7 +13,10 @@ pub struct SpineModel
 {
     pub skeleton: Skeleton,
     pub bones: Vec<Bone>,
+    #[serde(default)]
     pub slots: Vec<Slot>,
+    #[serde(default)]
     pub skins: Vec<Skin>,
+    #[serde(default)]
     pub animations: HashMap<String, Animation>
 }
