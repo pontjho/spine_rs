@@ -11,7 +11,11 @@ fn main() {
         animator: Box::from(ConcreteSpineAnimationHelper {})
     };
     //time: f32, model: &SpineModel, animation_name: &str, with_skin: &str
-    let attachments = spine_manager.get_attachments_at(0.0, &model, "translate_test", "default");
 
-    println!("{:?}", attachments);
+    let timesteps = [0.0, 0.5, 1.0];
+    for timestep in timesteps
+    {
+        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, "translate_test", "default");
+        println!("{:?}", attachments);
+    }
 }

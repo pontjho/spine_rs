@@ -112,17 +112,31 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 
                 let translation = if translations.len() > 0
                 {
-                    let translation_far_index = translations.iter().enumerate().filter(|(_, v)| v.time <= time).count();
+                    let translation_far_index = translations.iter().filter(|v| v.time <= time).count();
+                    let translation_far_index = if translation_far_index == translations.len() { translation_far_index - 1 } else { translation_far_index };
                     let translation_near_index = if translation_far_index == 0 { 0 } else { translation_far_index - 1 };
                     let ref near_translation = translations[translation_near_index];
                     let ref far_translation = translations[translation_far_index];
                     let near_position = near_translation.get_translation();
                     let far_position = far_translation.get_translation();
-                    let interval_length = far_translation.time - near_translation.time;
-                    let normalised_time = time - near_translation.time;
-                    let near_translation_weight = normalised_time / interval_length;
-                    let far_translation_weight = 1.0 - near_translation_weight;
-                    near_position * near_translation_weight + far_position * far_translation_weight
+
+                    let translation = if near_position == far_position
+                    {
+                        println!("time: {}\r\n {:#?}", time, translations);
+                        near_position
+                    }
+                    else
+                    {
+                        let interval_length = far_translation.time - near_translation.time;
+                        let normalised_time = time - near_translation.time;
+                        let far_translation_weight = normalised_time / interval_length;
+                        let near_translation_weight = 1.0 - far_translation_weight;
+                        let t = near_position * near_translation_weight + far_position * far_translation_weight;
+                        println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, translations);
+                        t
+                    };
+
+                    translation
                 }
                 else
                 {
