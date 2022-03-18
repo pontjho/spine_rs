@@ -1,12 +1,12 @@
 {
-"skeleton": { "hash": "uq/loTcNQNs", "spine": "4.0.62", "x": -32, "y": -32, "width": 64, "height": 64 },
+"skeleton": { "hash": "QXgkaUzfZ+4", "spine": "4.0.62", "x": -32, "y": -32, "width": 64, "height": 64 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "bone", "parent": "root", "length": 50 }
 ],
 "slots": [
 	{ "name": "delete_slot", "bone": "root", "attachment": "delete" },
-	{ "name": "undelete_slot", "bone": "bone", "attachment": "undelete" }
+	{ "name": "undelete_slot", "bone": "bone", "attachment": "light" }
 ],
 "skins": [
 	{
@@ -17,6 +17,7 @@
 			},
 			"undelete_slot": {
 				"delete": { "width": 64, "height": 64 },
+				"light": { "width": 64, "height": 64 },
 				"undelete": { "width": 64, "height": 64 }
 			}
 		}
@@ -42,6 +43,17 @@
 	},
 	"scale_test": {},
 	"shear_test": {},
+	"slot_change_test": {
+		"slots": {
+			"undelete_slot": {
+				"attachment": [
+					{ "name": "undelete" },
+					{ "time": 0.1666, "name": null },
+					{ "time": 0.3333, "name": "delete" }
+				]
+			}
+		}
+	},
 	"translate_test": {
 		"bones": {
 			"root": {

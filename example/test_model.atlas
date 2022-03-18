@@ -6,6 +6,9 @@ scale:0.5
 delete
 bounds:2,2,32,7
 offsets:0,11,32,32
+light
+bounds:2,2,32,7
+offsets:0,11,32,32
 undelete
 bounds:2,2,32,7
 offsets:0,11,32,32

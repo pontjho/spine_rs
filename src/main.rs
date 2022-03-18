@@ -15,10 +15,18 @@ fn main() {
     let timesteps = [0.0, 0.5, 1.0];
     for timestep in timesteps
     {
-        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, "translate_test", "default");
-        println!("{:?}", attachments);
+        let animation_name = "translate_test";
+        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, animation_name, "default");
+        println!("{} \t\t {:?}", animation_name, attachments);
 
-        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, "rotate_test", "default");
-        println!("{:?}", attachments);
+        let animation_name = "rotate_test";
+        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, animation_name, "default");
+        println!("{} \t\t {:?}", animation_name, attachments);
+
+        let animation_name = "slot_change_test";
+        let attachments = spine_manager.get_attachments_at(timestep * 0.3333, &model, animation_name, "default");
+        println!("{} \t\t {:?}", animation_name, attachments);
+
+        println!("\r\n");
     }
 }

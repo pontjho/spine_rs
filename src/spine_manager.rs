@@ -1,9 +1,11 @@
 use crate::spine_model::SpineModel;
 use crate::attachment::Attachment;
 use crate::bone::Bone;
+use crate::slot::Slot;
 use crate::animation::Animation;
 use crate::attachment::AttachmentType::Region;
 use crate::bone_keyframe::BoneKeyFrame;
+use crate::slot_keyframe::SlotKeyFrame;
 use crate::cgmath_integration::CGMathIntegrations;
 use cgmath::prelude::*;
 use cgmath::Vector2;
@@ -21,6 +23,7 @@ pub trait SpineManager
 pub trait SpineAnimationHelper
 {
     fn get_bone_transform(&self, bone: &Bone, animation: &Animation, time: f32) -> Matrix3<f32>;
+    fn get_slot_attachment(&self, slot: &Slot, animation: &Animation, time: f32) -> Option<String>;
 }
 
 pub struct ConcreteSpineManager
@@ -42,9 +45,6 @@ impl SpineManager for ConcreteSpineManager
             .bones
             .iter()
             .map(|bone| (bone.name.clone(), bone.parent.clone(), self.animator.get_bone_transform(bone, animation, time)))
-        //     .collect();
-        // let bone_global_transforms: HashMap<String, Matrix3<f32>> = bone_local_transforms
-        //     .iter()
             .fold(HashMap::default(), |accum, (bone_name, parent_bone, transform)| {
                 let bone_transform = parent_bone.as_ref().map(|b| accum[b] * transform).unwrap_or(transform.clone());
                 let new_transform = vec![(bone_name.to_string(), bone_transform)];
@@ -56,13 +56,13 @@ impl SpineManager for ConcreteSpineManager
         let active_attachments: Vec<_> = model
             .slots
             .iter()
-            .map(|v| (v.name.clone(), v.bone.clone(), v.attachment.clone()))
-            // .collect();
-        // let active_attachments: Vec<_> = active_attachment_names
-            // .iter()
+            // .map(|v| (v.name.clone(), v.bone.clone(), v.attachment.clone()))
+            .map(|v| (v.name.clone(), v.bone.clone(), self.animator.get_slot_attachment(v, animation, time)))
             .filter_map(|(slot_name, bone_name, attachment_name)| attachment_name.map(|aname| (slot_name, bone_name, aname)))
             .map(|(slot_name, bone_name, attachment_name)| (bone_name, attachment_name.clone(), skin_attachments[&slot_name][&attachment_name].clone()))
             .collect();
+
+        // println!("*********{:?}------------", active_attachments);
 
         let images: Vec<_> = active_attachments
             .into_iter()
@@ -137,7 +137,7 @@ fn interpolate<T>(time: f32, items: &Vec<T>) -> T::Value where T: Interpolatable
 
     let translation = if translation_far_index == translation_near_index
     {
-        println!("time: {}\r\n {:#?}", time, items);
+        // println!("time: {}\r\n {:#?}", time, items);
         near_position
     }
     else
@@ -147,7 +147,7 @@ fn interpolate<T>(time: f32, items: &Vec<T>) -> T::Value where T: Interpolatable
         let far_translation_weight = normalised_time / interval_length;
         let near_translation_weight = 1.0 - far_translation_weight;
         let t = near_position * near_translation_weight + far_position * far_translation_weight;
-        println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, items);
+        // println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, items);
         t
     };
 
@@ -162,18 +162,6 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
             .map(|BoneKeyFrame { rotate: rotations, translate: translations, scale: scales, shear: shears }| {
                 let rotation = if rotations.len() > 0
                 {
-                    // let rotation_far_index = rotations.iter().enumerate().filter(|(_, v)| v.time <= time).count();
-                    // let rotation_near_index = if rotation_far_index == 0 { 0 } else { rotation_far_index - 1 };
-                    // let ref near_rotation = rotations[rotation_near_index];
-                    // let ref far_rotation = rotations[rotation_far_index];
-                    // let near_angle = near_rotation.angle;
-                    // let far_angle = far_rotation.angle;
-                    // let interval_length = far_rotation.time - near_rotation.time;
-                    // let normalised_time = time - near_rotation.time;
-                    // let near_rotation_weight = normalised_time / interval_length;
-                    // let far_rotation_weight = 1.0 - near_rotation_weight;
-                    // let rotation_deg = near_angle * near_rotation_weight + far_angle * far_rotation_weight;
-                    // cgmath::Deg(rotation_deg).into()
                     interpolate(time, rotations)
                 }
                 else
@@ -184,31 +172,6 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
                 let translation = if translations.len() > 0
                 {
                     interpolate(time, translations)
-                    // let translation_far_index = translations.iter().filter(|v| v.time <= time).count();
-                    // let translation_far_index = if translation_far_index == translations.len() { translation_far_index - 1 } else { translation_far_index };
-                    // let translation_near_index = if translation_far_index == 0 { 0 } else { translation_far_index - 1 };
-                    // let ref near_translation = translations[translation_near_index];
-                    // let ref far_translation = translations[translation_far_index];
-                    // let near_position = near_translation.get_translation();
-                    // let far_position = far_translation.get_translation();
-
-                    // let translation = if near_position == far_position
-                    // {
-                    //     println!("time: {}\r\n {:#?}", time, translations);
-                    //     near_position
-                    // }
-                    // else
-                    // {
-                    //     let interval_length = far_translation.time - near_translation.time;
-                    //     let normalised_time = time - near_translation.time;
-                    //     let far_translation_weight = normalised_time / interval_length;
-                    //     let near_translation_weight = 1.0 - far_translation_weight;
-                    //     let t = near_position * near_translation_weight + far_position * far_translation_weight;
-                    //     println!("******\r\n near: {} \r\n far: {} \r\n interval: {} \r\n time: {} \r\n near_weight: {} \r\n far_weight: {} \r\n result {:#?} \r\n inputs: {:#?}\r\n*********", translation_near_index, translation_far_index, interval_length, normalised_time, near_translation_weight, far_translation_weight, t, translations);
-                    //     t
-                    // };
-
-                    // translation
                 }
                 else
                 {
@@ -219,5 +182,35 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
                     * Matrix3::from_translation(translation)
             })
             .unwrap_or(Matrix3::identity())
+    }
+
+    fn get_slot_attachment(&self, slot: &Slot, animation: &Animation, time: f32) -> Option<String>
+    {
+        // let animation_slots = animation.slots.get(&slot.name);
+        // if animation_slots.len
+        //     {
+        //         let slot_keyframe_index = animation_slots.iter().filter(|v| v.time() <= time).count();
+        //         let ref slot = animation_slots[slot_keyframe_index];
+        //         slot.attachment
+        //     })
+        //     .unwrap_or(slot.attachment.clone())
+        animation.slots.get(&slot.name)
+            .map(|SlotKeyFrame { attachment: animation_slots, colour: _ }| {
+                if animation_slots.len() > 0
+                {
+                    let slot_keyframe_index = animation_slots.iter().filter(|v| v.time <= time).count() - 1;
+                    // println!("{} {} {} {} {}", time, animation_slots[0].time, animation_slots[0].time <= time, animation_slots[1].time <= time,slot_keyframe_index);
+                    //let slot_keyframe_index = if slot_keyframe_index == animation_slots.len() { slot_keyframe_index - 1 } else { slot_keyframe_index };
+                    let ref slotto = animation_slots[slot_keyframe_index];
+                    let r = slotto.attachment_name.clone();
+                    // println!("time: {}\r\n index: {} \r\n attachment: {:?} \r\n slot: {:?} \r\n slots: {:?}", time, slot_keyframe_index, r, slotto, animation_slots);
+                    r
+                }
+                else
+                {
+                    slot.attachment.clone()
+                }
+            })
+            .unwrap_or(slot.attachment.clone())
     }
 }
