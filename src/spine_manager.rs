@@ -18,6 +18,7 @@ use cgmath::Rad;
 pub trait SpineManager
 {
     fn get_attachments_at(&self, time: f32, from_model: &SpineModel, with_animation: &str, with_skin: &str) -> Vec<ModelImage>;
+    fn get_animation_id_attachments_at(&self, time: f32, from_model: &SpineModel, with_animation: usize, with_skin: &str) -> Vec<ModelImage>;
 }
 
 pub trait SpineAnimationHelper
@@ -76,7 +77,14 @@ impl SpineManager for ConcreteSpineManager
             })
             .collect();
 
+        // println!("{:#?}", images);
         images
+    }
+
+    fn get_animation_id_attachments_at(&self, time: f32, model: &SpineModel, animation_id: usize, with_skin: &str) -> Vec<ModelImage>
+    {
+        let animation_name = model.animations.iter().nth(animation_id).unwrap().0;
+        self.get_attachments_at(time, model, animation_name, with_skin)
     }
 }
 
