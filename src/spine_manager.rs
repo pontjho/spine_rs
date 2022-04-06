@@ -14,6 +14,11 @@ use std::collections::HashMap;
 use crate::bone_keyframe::BoneTranslateKeyFrame;
 use crate::bone_keyframe::BoneRotateKeyFrame;
 use cgmath::Rad;
+use cgmath::Deg;
+use std::cmp::Ordering;
+use crate::bone_keyframe::BoneScaleKeyFrame;
+use crate::cgmath_integration::create_transform;
+use crate::attachment::AttachmentType;
 
 pub trait SpineManager
 {
@@ -39,52 +44,91 @@ pub struct ConcreteSpineAnimationHelper
 
 impl SpineManager for ConcreteSpineManager
 {
+    fn get_animation_id_attachments_at(&self, time: f32, model: &SpineModel, animation_id: usize, with_skin: &str) -> Vec<ModelImage>
+    {
+        let animation_name = model.animations.iter().nth(animation_id).unwrap().0;
+        // println!("{} {}", animation_name, time);
+        let the_return = self.get_attachments_at(time, model, animation_name, with_skin);
+        println!("Getting attachments for {} {} at {} as {:#?}\n---------", animation_name, animation_id, time, the_return);
+        the_return
+    }
+
     fn get_attachments_at(&self, time: f32, model: &SpineModel, animation_name: &str, with_skin: &str) -> Vec<ModelImage>
     {
         let animation = &model.animations[animation_name];
-        let bone_global_transforms: HashMap<String, Matrix3<f32>> = model
+        let bone_global_transforms = self.get_bone_transforms(time, model, animation);
+        let active_attachments: Vec<_> = self.get_active_attachments(time, model, animation, with_skin);
+        let attachment_transforms = self.get_attachment_transforms(active_attachments, bone_global_transforms);
+        let images: Vec<_> = self.get_attachment_images(attachment_transforms);
+        images
+    }
+}
+
+impl ConcreteSpineManager
+{
+    fn get_bone_transforms(&self, time: f32, model: &SpineModel, animation: &Animation) -> HashMap<String, Matrix3<f32>>
+    {
+        let temp_debug = model
             .bones
             .iter()
             .map(|bone| (bone.name.clone(), bone.parent.clone(), self.animator.get_bone_transform(bone, animation, time)))
+            .collect::<Vec<_>>();
+        println!("Raw lookups {:#?}", temp_debug);
+        let the_return: HashMap<String, Matrix3<f32>> = temp_debug.iter()
             .fold(HashMap::default(), |accum, (bone_name, parent_bone, transform)| {
                 let bone_transform = parent_bone.as_ref().map(|b| accum[b] * transform).unwrap_or(transform.clone());
                 let new_transform = vec![(bone_name.to_string(), bone_transform)];
                 accum.into_iter().chain(new_transform).collect()
             });
+        println!("Sigh {:#?}", the_return);
+        the_return
+    }
 
+    fn get_active_attachments(&self, time: f32, model: &SpineModel, animation: &Animation, with_skin: &str) -> Vec<(String, String, AttachmentType)>
+    {
         let skin = model.skins.iter().find(|s| s.name == with_skin).unwrap();
         let skin_attachments = &skin.attachments;
         let active_attachments: Vec<_> = model
             .slots
             .iter()
-            // .map(|v| (v.name.clone(), v.bone.clone(), v.attachment.clone()))
             .map(|v| (v.name.clone(), v.bone.clone(), self.animator.get_slot_attachment(v, animation, time)))
             .filter_map(|(slot_name, bone_name, attachment_name)| attachment_name.map(|aname| (slot_name, bone_name, aname)))
             .map(|(slot_name, bone_name, attachment_name)| (bone_name, attachment_name.clone(), skin_attachments[&slot_name][&attachment_name].clone()))
             .collect();
+        active_attachments
+    }
 
-        // println!("*********{:?}------------", active_attachments);
-
-        let images: Vec<_> = active_attachments
+    fn get_attachment_transforms(&self, active_attachments: Vec<(String, String, AttachmentType)>, bone_global_transforms: HashMap<String, Matrix3<f32>>) -> Vec<(String, Matrix3<f32>, Matrix3<f32>, (f32, f32))>
+    {
+        let attachment_transforms = active_attachments
             .into_iter()
             .filter_map(|(bone_name, attachment_name, attachment)| match attachment {
                 Region(a) => {
-                    let aa: Matrix3<f32> = a.get_transform();
-                    let b: Matrix3<f32> = bone_global_transforms[&bone_name];
-                    Some(ModelImage { transform: (aa * b).into(), texture_name: a.path.unwrap_or(attachment_name)})
+                    let attachment_transform: Matrix3<f32> = a.get_transform(&attachment_name);
+                    let bone_transform: Matrix3<f32> = bone_global_transforms[&bone_name];
+                    //let image_scale: Matrix3<f32> = Matrix3::from_nonuniform_scale(a.width / model.skeleton.width.unwrap_or(a.width), a.height / model.skeleton.height.unwrap_or(a.height));
+                    let image_dimensions = (a.width, a.height);
+                    Some((a.path.unwrap_or(attachment_name), attachment_transform, bone_transform, image_dimensions))
                 },
                 _ => None
             })
-            .collect();
+            .collect::<Vec<_>>();
 
-        // println!("{:#?}", images);
-        images
+        println!("texture attachment bone image transforms \r\n{:#?}", attachment_transforms);
+        attachment_transforms
     }
 
-    fn get_animation_id_attachments_at(&self, time: f32, model: &SpineModel, animation_id: usize, with_skin: &str) -> Vec<ModelImage>
+    fn get_attachment_images(&self, attachment_transforms: Vec<(String, Matrix3<f32>, Matrix3<f32>, (f32, f32))>) -> Vec<ModelImage>
     {
-        let animation_name = model.animations.iter().nth(animation_id).unwrap().0;
-        self.get_attachments_at(time, model, animation_name, with_skin)
+        let images = attachment_transforms
+            .into_iter()
+            .map(|(texture_name, attachment_transform, bone_transform, image_dimensions)|{
+                let transform = attachment_transform * bone_transform;
+                ModelImage { transform: transform.into(), texture_name, dimensions: image_dimensions}
+            })
+            .collect();
+        println!("Final transform {:#?}", images);
+        images
     }
 }
 
@@ -92,6 +136,7 @@ impl SpineManager for ConcreteSpineManager
 pub struct ModelImage
 {
     pub transform: [[f32; 3]; 3],
+    pub dimensions: (f32, f32),
     pub texture_name: String
 }
 
@@ -120,7 +165,7 @@ impl Interpolatable for BoneTranslateKeyFrame
 
 impl Interpolatable for BoneRotateKeyFrame
 {
-    type Value = Rad<f32>;
+    type Value = Deg<f32>;
 
     fn time(&self) -> f32
     {
@@ -130,6 +175,21 @@ impl Interpolatable for BoneRotateKeyFrame
     fn get_value(&self) -> Self::Value
     {
         cgmath::Deg(self.angle).into()
+    }
+}
+
+impl Interpolatable for BoneScaleKeyFrame
+{
+    type Value = Vector2<f32>;
+
+    fn time(&self) -> f32
+    {
+        self.time
+    }
+
+    fn get_value(&self) -> Self::Value
+    {
+        self.get_scale()
     }
 }
 
@@ -166,11 +226,28 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 {
     fn get_bone_transform(&self, bone: &Bone, animation: &Animation, time: f32) -> Matrix3<f32>
     {
-        animation.bones.get(&bone.name)
+        let anim_length = animation
+            .bones
+            .iter()
+            .map(|(_, anim)| anim
+                .rotate
+                .iter()
+                .map(|r| r.time)
+                .chain(anim.translate.iter().map(|t| t.time))
+                .chain(anim.scale.iter().map(|t| t.time))
+                .chain(anim.shear.iter().map(|t| t.time))
+            )
+            .flatten()
+            // .collect();
+            .max_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal))
+            .unwrap_or(0.0);
+        let time = time * anim_length;
+            // .collect();
+        let (rotation, translation, scale) = animation.bones.get(&bone.name)
             .map(|BoneKeyFrame { rotate: rotations, translate: translations, scale: scales, shear: shears }| {
                 let rotation = if rotations.len() > 0
                 {
-                    interpolate(time, rotations)
+                    interpolate(time, rotations) + bone.get_rotation()
                 }
                 else
                 {
@@ -179,17 +256,31 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 
                 let translation = if translations.len() > 0
                 {
-                    interpolate(time, translations)
+                    interpolate(time, translations) + bone.get_translation()
                 }
                 else
                 {
+                    //println!("{:?}", bone.get_translation());
                     bone.get_translation()
                 };
 
-                Matrix3::from_angle_z(rotation)
-                    * Matrix3::from_translation(translation)
+                let scale = if scales.len() > 0
+                {
+                    interpolate(time, scales) + bone.get_scale()
+                }
+                else
+                {
+                    bone.get_scale()
+                };
+
+                (rotation, translation, scale)
             })
-            .unwrap_or(Matrix3::identity())
+            .unwrap_or((bone.get_rotation(), bone.get_translation(), bone.get_scale()));
+            //.unwrap_or(Matrix3::from_angle_z(bone.get_rotation()) * Matrix3::from_nonuniform_scale(bone.scale_x, bone.scale_y) * Matrix3::from_translation(bone.get_translation()));
+
+        let the_return = create_transform(rotation, translation, scale);
+
+        the_return
     }
 
     fn get_slot_attachment(&self, slot: &Slot, animation: &Animation, time: f32) -> Option<String>
