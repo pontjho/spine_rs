@@ -68,6 +68,23 @@ impl ConcreteSpineManager
 {
     fn get_bone_transforms(&self, time: f32, model: &SpineModel, animation: &Animation) -> HashMap<String, Matrix3<f32>>
     {
+        let anim_length = animation
+            .bones
+            .iter()
+            .map(|(_, anim)| anim
+                .rotate
+                .iter()
+                .map(|r| r.time)
+                .chain(anim.translate.iter().map(|t| t.time))
+                .chain(anim.scale.iter().map(|t| t.time))
+                .chain(anim.shear.iter().map(|t| t.time))
+            )
+            .flatten()
+            // .collect();
+            .max_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal))
+            .unwrap_or(0.0);
+        let time = time * anim_length;
+        
         let temp_debug = model
             .bones
             .iter()
@@ -226,22 +243,10 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 {
     fn get_bone_transform(&self, bone: &Bone, animation: &Animation, time: f32) -> Matrix3<f32>
     {
-        let anim_length = animation
-            .bones
-            .iter()
-            .map(|(_, anim)| anim
-                .rotate
-                .iter()
-                .map(|r| r.time)
-                .chain(anim.translate.iter().map(|t| t.time))
-                .chain(anim.scale.iter().map(|t| t.time))
-                .chain(anim.shear.iter().map(|t| t.time))
-            )
-            .flatten()
-            // .collect();
-            .max_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal))
-            .unwrap_or(0.0);
-        let time = time * anim_length;
+        if bone.name == "root"
+        {
+            println!("+++++++++++++ {:?}", bone)
+        }
             // .collect();
         let (rotation, translation, scale) = animation.bones.get(&bone.name)
             .map(|BoneKeyFrame { rotate: rotations, translate: translations, scale: scales, shear: shears }| {
