@@ -55,6 +55,7 @@ impl SpineManager for ConcreteSpineManager
 
     fn get_attachments_at(&self, time: f32, model: &SpineModel, animation_name: &str, with_skin: &str) -> Vec<ModelImage>
     {
+        // let time = 0.0;
         let animation = &model.animations[animation_name];
         let bone_global_transforms = self.get_bone_transforms(time, model, animation);
         let active_attachments: Vec<_> = self.get_active_attachments(time, model, animation, with_skin);
@@ -155,6 +156,21 @@ pub struct ModelImage
     pub transform: [[f32; 3]; 3],
     pub dimensions: (f32, f32),
     pub texture_name: String
+}
+
+pub fn dimensions_as_vertices(dimensions: (f32, f32), padding: [f32; 4]) -> [[f32; 3]; 4]
+{
+    let (w, h) = dimensions;
+    let (half_width, half_height) = (w / 2.0, h / 2.0);
+    let (left, right) = (-half_width, half_width);
+    let (top, bottom) = (half_height, -half_height);
+    let vertices = [
+        [left, top, 1.0],
+        [right, top, 1.0],
+        [right, bottom, 1.0],
+        [left, bottom, 1.0]
+    ];
+    vertices
 }
 
 pub trait Interpolatable
@@ -284,6 +300,11 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
             })
             .unwrap_or((bone.get_rotation(), bone.get_translation(), bone.get_scale()));
             //.unwrap_or(Matrix3::from_angle_z(bone.get_rotation()) * Matrix3::from_nonuniform_scale(bone.scale_x, bone.scale_y) * Matrix3::from_translation(bone.get_translation()));
+
+        if bone.name == "root"
+        {
+            println!("+++++++++++++ {:?} {:?} {:?}", rotation, translation, scale)
+        }
 
         let the_return = create_transform(rotation, translation, scale);
 
