@@ -139,9 +139,9 @@ pub fn create_transform(rotation: Deg<f32>, translation: Vector2<f32>, scale: Ve
 {
     let the_return = 
             Matrix3::from_scale(1.0)
-            * Matrix3::from_translation(translation)
             * Matrix3::from_angle_z(rotation)
             * Matrix3::from_nonuniform_scale(scale[0], scale[1])
+            * Matrix3::from_translation(translation)
             * Matrix3::from_scale(1.0);
     //println!("Creating bone {} transform from translation {:?} and rotation {:?} as {:?}", bone.name, translation, rotation, the_return);
     the_return
