@@ -271,7 +271,9 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
 
                 let scale = if scales.len() > 0
                 {
-                    interpolate(time, scales) + bone.get_scale()
+                    let interp_scale = interpolate(time, scales);
+                    let bone_scale = bone.get_scale();
+                    Vector2::new(interp_scale.x * bone_scale.x, interp_scale.y * bone_scale.y)
                 }
                 else
                 {
