@@ -115,17 +115,17 @@ impl ConcreteSpineManager
         active_attachments
     }
 
-    fn get_attachment_transforms(&self, active_attachments: Vec<(String, String, AttachmentType)>, bone_global_transforms: HashMap<String, Matrix3<f32>>) -> Vec<(String, Matrix3<f32>, Matrix3<f32>, (f32, f32))>
+    fn get_attachment_transforms(&self, active_attachments: Vec<(String, String, AttachmentType)>, bone_global_transforms: HashMap<String, Matrix3<f32>>) -> Vec<(String, Matrix3<f32>, (f32, f32))>
     {
         let attachment_transforms = active_attachments
             .into_iter()
             .filter_map(|(bone_name, attachment_name, attachment)| match attachment {
                 Region(a) => {
-                    let attachment_transform: Matrix3<f32> = a.get_transform(&attachment_name);
                     let bone_transform: Matrix3<f32> = bone_global_transforms[&bone_name];
+                    let attachment_transform: Matrix3<f32> = a.get_transform(&bone_transform, &attachment_name);
                     //let image_scale: Matrix3<f32> = Matrix3::from_nonuniform_scale(a.width / model.skeleton.width.unwrap_or(a.width), a.height / model.skeleton.height.unwrap_or(a.height));
                     let image_dimensions = (a.width, a.height);
-                    Some((a.path.unwrap_or(attachment_name), attachment_transform, bone_transform, image_dimensions))
+                    Some((a.path.unwrap_or(attachment_name), attachment_transform, image_dimensions))
                 },
                 _ => None
             })
@@ -135,13 +135,13 @@ impl ConcreteSpineManager
         attachment_transforms
     }
 
-    fn get_attachment_images(&self, attachment_transforms: Vec<(String, Matrix3<f32>, Matrix3<f32>, (f32, f32))>) -> Vec<ModelImage>
+    fn get_attachment_images(&self, attachment_transforms: Vec<(String, Matrix3<f32>, (f32, f32))>) -> Vec<ModelImage>
     {
         let images = attachment_transforms
             .into_iter()
-            .map(|(texture_name, attachment_transform, bone_transform, image_dimensions)|{
-                let transform = attachment_transform * bone_transform;
-                ModelImage { transform: transform.into(), texture_name, dimensions: image_dimensions}
+            .map(|(texture_name, attachment_transform, image_dimensions)|{
+                //let transform = attachment_transform * bone_transform;
+                ModelImage { transform: attachment_transform.into(), texture_name, dimensions: image_dimensions}
             })
             .collect();
         println!("Final transform {:#?}", images);

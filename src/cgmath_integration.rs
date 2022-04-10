@@ -90,11 +90,19 @@ impl CGMathIntegrations for RegionAttachment
 
 impl RegionAttachment
 {
-    pub fn get_transform(&self, attachment_name: &str) -> Matrix3<f32>
+    pub fn get_transform(&self, base_transform: &Matrix3<f32>, attachment_name: &str) -> Matrix3<f32>
     {
         let scale = self.get_scale();
         let rotation = self.get_rotation();
         let translation = self.get_translation();
+
+
+    let the_return = 
+        base_transform
+            * Matrix3::from_angle_z(rotation)
+            * Matrix3::from_nonuniform_scale(scale[0], scale[1])
+            * Matrix3::from_translation(translation)
+            * Matrix3::from_scale(1.0);
 
         // let scale_matrix = Matrix3::from_nonuniform_scale(self.scale_x, self.scale_y);
         // let rotation_matrix = Matrix3::from_angle_z(rotation);
@@ -105,7 +113,7 @@ impl RegionAttachment
         //     * translation_matrix;
 
         // println!("Build transform for {} with {:?}, {:?}, {:?} is {:?}", attachment_name, scale, rotation, translation, the_return);
-        let the_return = create_transform(rotation, translation, scale);
+        // let the_return = create_transform(rotation, translation, scale);
 
         the_return
     }
