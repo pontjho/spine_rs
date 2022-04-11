@@ -58,6 +58,7 @@ impl SpineManager for ConcreteSpineManager
         // let time = 0.0;
         let animation = &model.animations[animation_name];
         let bone_global_transforms = self.get_bone_transforms(time, model, animation);
+        println!("{}", animation_name);
         let active_attachments: Vec<_> = self.get_active_attachments(time, model, animation, with_skin);
         let attachment_transforms = self.get_attachment_transforms(active_attachments, bone_global_transforms);
         let images: Vec<_> = self.get_attachment_images(attachment_transforms);
@@ -323,20 +324,28 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
         //     .unwrap_or(slot.attachment.clone())
         animation.slots.get(&slot.name)
             .map(|SlotKeyFrame { attachment: animation_slots, colour: _ }| {
-                if animation_slots.len() > 0
-                {
-                    let slot_keyframe_index = animation_slots.iter().filter(|v| v.time <= time).count() - 1;
-                    // println!("{} {} {} {} {}", time, animation_slots[0].time, animation_slots[0].time <= time, animation_slots[1].time <= time,slot_keyframe_index);
-                    //let slot_keyframe_index = if slot_keyframe_index == animation_slots.len() { slot_keyframe_index - 1 } else { slot_keyframe_index };
-                    let ref slotto = animation_slots[slot_keyframe_index];
-                    let r = slotto.attachment_name.clone();
-                    // println!("time: {}\r\n index: {} \r\n attachment: {:?} \r\n slot: {:?} \r\n slots: {:?}", time, slot_keyframe_index, r, slotto, animation_slots);
-                    r
-                }
-                else
-                {
-                    slot.attachment.clone()
-                }
+                // if animation_slots.len() > 0
+                // {
+                //     println!("{:?}", animation_slots);
+                //     let slot_keyframe_index = animation_slots.iter().filter(|v| v.time <= time).count() - 1;
+                //     // println!("{} {} {} {} {}", time, animation_slots[0].time, animation_slots[0].time <= time, animation_slots[1].time <= time,slot_keyframe_index);
+                //     //let slot_keyframe_index = if slot_keyframe_index == animation_slots.len() { slot_keyframe_index - 1 } else { slot_keyframe_index };
+                //     let ref slotto = animation_slots[slot_keyframe_index];
+                //     let r = slotto.attachment_name.clone();
+                //     // println!("time: {}\r\n index: {} \r\n attachment: {:?} \r\n slot: {:?} \r\n slots: {:?}", time, slot_keyframe_index, r, slotto, animation_slots);
+                //     r
+                // }
+                // else
+                // {
+                //     slot.attachment.clone()
+                // }
+
+                animation_slots
+                    .iter()
+                    .find(|v| v.time <= time)
+                    .map(|v| &v.attachment_name)
+                    .unwrap_or(&slot.attachment)
+                    .clone()
             })
             .unwrap_or(slot.attachment.clone())
     }
