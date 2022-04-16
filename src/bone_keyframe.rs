@@ -3,7 +3,7 @@ use crate::animation_interpolation::deserialize_animation_interpolation;
 use serde::{Serialize, Deserialize};
 use crate::util::one;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneKeyFrame
 {
@@ -25,7 +25,7 @@ pub struct BoneKeyFrame
 //     Shear
 // }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneRotateKeyFrame
 {
@@ -38,7 +38,7 @@ pub struct BoneRotateKeyFrame
     pub angle: f32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneTranslateKeyFrame
 {
@@ -52,7 +52,7 @@ pub struct BoneTranslateKeyFrame
     pub y: f32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneScaleKeyFrame
 {
@@ -66,7 +66,7 @@ pub struct BoneScaleKeyFrame
     pub y: f32
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneShearKeyFrame
 {

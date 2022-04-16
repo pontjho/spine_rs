@@ -3,7 +3,7 @@ use crate::animation_interpolation::deserialize_animation_interpolation;
 use serde::{Serialize, Deserialize};
 use crate::util::one;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct SlotKeyFrame
 {
@@ -13,7 +13,7 @@ pub struct SlotKeyFrame
     pub colour: Vec<SlotColourKeyFrame>
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct SlotAttachmentKeyFrame
 {
@@ -24,7 +24,7 @@ pub struct SlotAttachmentKeyFrame
     pub attachment_name: Option<String>
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct SlotColourKeyFrame
 {
