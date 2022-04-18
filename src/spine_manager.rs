@@ -25,7 +25,7 @@ pub trait SpineManager
     fn get_attachments_at(&self, time: f32, from_model: &SpineModel, with_animation: &str, with_skin: &str) -> Vec<ModelImage>;
     fn get_animation_id_attachments_at(&self, time: f32, from_model: &SpineModel, with_animation: usize, with_skin: &str) -> Vec<ModelImage>;
 
-    fn mix_animations(&self, animations: &Vec<Animation>) -> Animation;
+    fn mix_animations(&self, animations: &Vec<&Animation>) -> Animation;
     fn get_attachments_for_animation(&self, time: f32, from_model: &SpineModel, with_animation: &Animation, with_skin: &str) -> Vec<ModelImage>;
 }
 
@@ -63,7 +63,7 @@ impl SpineManager for ConcreteSpineManager
         self.get_attachments_for_animation(time, model, animation, with_skin)
     }
 
-    fn mix_animations(&self, animations: &Vec<Animation>) -> Animation
+    fn mix_animations(&self, animations: &Vec<&Animation>) -> Animation
     {
         let mut bones: HashMap<String, BoneKeyFrame> = Default::default();
         let mut slots: HashMap<String, SlotKeyFrame> = Default::default();
