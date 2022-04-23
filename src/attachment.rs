@@ -49,9 +49,11 @@ pub struct RegionAttachment
     pub y: f32,
 
     #[serde(default="one")]
+    #[serde(alias = "scaleX")]
     pub scale_x: f32,
 
     #[serde(default="one")]
+    #[serde(alias = "scaleY")]
     pub scale_y: f32,
 
     #[serde(default)]
