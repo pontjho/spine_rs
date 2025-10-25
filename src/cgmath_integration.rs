@@ -15,22 +15,7 @@ pub trait CGMathIntegrations
     fn get_rotation(&self) -> Deg<f32>;
     fn get_scale(&self) -> Vector2<f32>;
     fn get_shear(&self) -> Vector2<f32>;
-
-    //fn get_transform(&self) -> Matrix3<f32>;
 }
-
-// pub trait AnimationLogic
-// {
-//     fn get_translation_at(&self, time: f32, keyframes: &Vec<BoneTranslateKeyFrame>) -> Vector2<f32>;
-//     fn get_scale_at(&self, time: f32, keyframes: &Vec<BoneScaleKeyFrame>) -> Vector2<f32>;
-//     fn get_shear_at(&self, time: f32, keyframes: &Vec<BoneShearKeyFrame>) -> Vector2<f32>;
-//     fn get_rotation_at(&self, time: f32, keyframes: &Vec<BoneRotateKeyFrame>) -> Rad<f32>;
-// }
-
-// pub trait Matrixer
-// {
-//     fn build_transform(&self, translation: (f32, f32), scale: (f32, f32), shear: (f32, f32), rotation: f32) -> Matrix3<f32>;
-// }
 
 pub trait InterpolationLogic
 {
@@ -103,17 +88,6 @@ impl RegionAttachment
             * Matrix4::from_translation(translation)
             * Matrix4::from_scale(1.0);
 
-        // let scale_matrix = Matrix3::from_nonuniform_scale(self.scale_x, self.scale_y);
-        // let rotation_matrix = Matrix3::from_angle_z(rotation);
-        // let translation_matrix = Matrix3::from_translation(translation);
-        
-        // let the_return = scale_matrix
-        //     * rotation_matrix
-        //     * translation_matrix;
-
-        // println!("Build transform for {} with {:?}, {:?}, {:?} is {:?}", attachment_name, scale, rotation, translation, the_return);
-        // let the_return = create_transform(rotation, translation, scale);
-
         the_return
     }
 }
@@ -133,30 +107,3 @@ impl BoneScaleKeyFrame
         Vector2::new(self.x, self.y)
     }
 }
-
-pub fn create_transform(rotation: Deg<f32>, translation: Vector3<f32>, scale: Vector2<f32>) -> Matrix4<f32>
-{
-    let the_return = 
-            Matrix4::from_scale(1.0)
-            * Matrix4::from_angle_z(rotation)
-            * Matrix4::from_nonuniform_scale(scale[0], scale[1], 1.0)
-            * Matrix4::from_translation(translation)
-            * Matrix4::from_scale(1.0);
-    //println!("Creating bone {} transform from translation {:?} and rotation {:?} as {:?}", bone.name, translation, rotation, the_return);
-    the_return
-}
-
-// pub fn get_bone_transform(bone: &Bone, bone_animations: &BoneKeyFrame, time: f32)
-// {
-//     // let animation = animations[animation];
-//     // let rotation_index = animation.translations.iter().find(|a| a.time < time);
-//     // let shear_index = animation.translations.iter().find(|a| a.time < time);
-//     // let scale_index = animation.translations.iter().find(|a| a.time < time);
-
-//     let translation = find_animation_translation(bone_animations)
-//         .map(|v| {
-//             let (trans1, trans2) = find_nearest_translations(animation.translations.iter().find_index(|a| a.time < time));
-//             let translate = interpolate_translation(trans1, trans2, time);
-//         })
-//         .unwrap_or(bone.get_translation());
-// }

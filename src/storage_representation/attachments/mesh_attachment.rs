@@ -1,10 +1,9 @@
 use serde::Deserialize;
-use serde::Serialize;
 
 use crate::util::ffffffff;
 use crate::util::deserialize_colour;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct MeshAttachment
 {

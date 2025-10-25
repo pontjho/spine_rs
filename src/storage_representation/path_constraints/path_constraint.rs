@@ -1,6 +1,10 @@
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize, Debug)]
+use super::PathConstraintPositionMode;
+use super::PathConstraintRotateMode;
+use super::PathConstraintSpacingMode;
+
+#[derive(Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct PathConstraint
 {
@@ -29,51 +33,4 @@ pub struct PathConstraint
 
     #[serde(default)]
     pub translate_mix: f32
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub enum PathConstraintPositionMode
-{
-    Fixed,
-    Percent
-}
-
-impl Default for PathConstraintPositionMode
-{
-    fn default() -> Self
-    {
-        PathConstraintPositionMode::Percent
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub enum PathConstraintSpacingMode
-{
-    Length,
-    Fixed,
-    Percent
-}
-
-impl Default for PathConstraintSpacingMode
-{
-    fn default() -> Self
-    {
-        PathConstraintSpacingMode::Length
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub enum PathConstraintRotateMode
-{
-    Tangent,
-    Chain,
-    ChainScale
-}
-
-impl Default for PathConstraintRotateMode
-{
-    fn default() -> Self
-    {
-        PathConstraintRotateMode::Tangent
-    }
 }

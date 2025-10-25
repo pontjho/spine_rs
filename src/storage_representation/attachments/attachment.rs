@@ -1,7 +1,7 @@
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 use super::AttachmentType;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Attachment
 {

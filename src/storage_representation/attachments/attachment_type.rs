@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use super::BoundingBoxAttachment;
 use super::ClippingAttachment;
@@ -8,7 +8,7 @@ use super::PathAttachment;
 use super::PointAttachment;
 use super::RegionAttachment;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 //#[serde(tag="type")]
 #[serde(untagged)]
 pub enum AttachmentType

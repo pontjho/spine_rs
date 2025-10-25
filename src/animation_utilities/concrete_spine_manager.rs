@@ -1,3 +1,14 @@
+use std::{cmp::Ordering, collections::HashMap};
+
+use cgmath::Matrix4;
+
+use crate::{animation_utilities::{model_image::ModelImage, spine_animation_helper::SpineAnimationHelper, spine_manager::SpineManager, spine_vertex::SpineVertex}, storage_representation::{animations::Animation, attachments::AttachmentType, bones::BoneKeyFrame, slots::SlotKeyFrame, SpineModel}};
+
+pub struct ConcreteSpineManager
+{
+    pub animator: Box<dyn SpineAnimationHelper>
+}
+
 impl ConcreteSpineManager
 {
     fn get_bone_transforms(&self, time: f32, model: &SpineModel, animation: &Animation) -> HashMap<String, Matrix4<f32>>
@@ -95,5 +106,64 @@ impl ConcreteSpineManager
             })
             .collect();
         images
+    }
+}
+
+
+impl SpineManager for ConcreteSpineManager
+{
+    fn get_animation_id_attachments_at(&self, time: f32, model: &SpineModel, animation_id: usize, with_skin: &str) -> Vec<ModelImage>
+    {
+        let animation_name = model.animations.iter().nth(animation_id).unwrap().0;
+        let the_return = self.get_attachments_at(time, model, animation_name, with_skin);
+        the_return
+    }
+
+    fn get_attachments_at(&self, time: f32, model: &SpineModel, animation_name: &str, with_skin: &str) -> Vec<ModelImage>
+    {
+        let animation = &model.animations[animation_name];
+        self.get_attachments_for_animation(time, model, animation, with_skin)
+    }
+
+    fn mix_animations(&self, animations: &Vec<Animation>) -> Animation
+    {
+        let mut bones: HashMap<String, BoneKeyFrame> = Default::default();
+        let mut slots: HashMap<String, SlotKeyFrame> = Default::default();
+
+        for Animation { bones: a_bones, slots: a_slots } in animations
+        {
+            for (bone_name, bone) in a_bones
+            {
+                if !bones.contains_key(bone_name)
+                {
+                    bones.insert(bone_name.to_string(), bone.clone());
+                }
+            }
+            for (slot_name, slot) in a_slots
+            {
+                if !slots.contains_key(slot_name)
+                {
+                    slots.insert(slot_name.to_string(), slot.clone());
+                }
+            }
+        }
+
+        Animation {
+            bones,
+            slots
+        }
+    }
+
+    fn get_attachments_for_animation(&self, time: f32, model: &SpineModel, animation: &Animation, with_skin: &str) -> Vec<ModelImage>
+    {
+        let bone_global_transforms = self.get_bone_transforms(time, model, animation);
+        let active_attachments: Vec<_> = self.get_active_attachments(time, model, animation, with_skin);
+        let attachment_transforms = self.get_attachment_transforms(active_attachments, bone_global_transforms);
+        let images: Vec<_> = self.get_attachment_images(attachment_transforms);
+        images
+    }
+    
+    fn get_bounding_boxes_for_animation(&self, time: f32, from_model: &SpineModel, with_animation: &Animation, with_skin: &str) -> Vec<crate::bounding_box::BoundingBox> {
+        todo!()
     }
 }

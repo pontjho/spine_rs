@@ -1,7 +1,7 @@
 //use serde::{Serialize, Deserialize};
-use serde::{self, Serialize, Deserialize, Deserializer};
+use serde::{self, Deserialize, Deserializer};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub enum AnimationInterpolation
 {

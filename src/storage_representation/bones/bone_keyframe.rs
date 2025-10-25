@@ -1,11 +1,11 @@
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 use crate::util::one;
 use super::BoneTranslateKeyFrame;
 use super::BoneRotateKeyFrame;
 use super::BoneShearKeyFrame;
 use super::BoneScaleKeyFrame;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneKeyFrame
 {

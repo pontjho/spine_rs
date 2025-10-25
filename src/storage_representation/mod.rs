@@ -8,6 +8,7 @@ mod skeleton;
 mod skin;
 mod spine_model;
 mod ik_constraint;
+mod concrete_spine_parser;
 
 pub use skeleton::Skeleton;
 pub use skin::Skin;
