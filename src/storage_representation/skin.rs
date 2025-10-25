@@ -1,9 +1,9 @@
-use crate::attachment::AttachmentType;
+use super::attachments::AttachmentType;
 use std::collections::HashMap;
 
 use serde::{Serialize, Deserialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Skin
 {

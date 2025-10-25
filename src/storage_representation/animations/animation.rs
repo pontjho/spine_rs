@@ -1,7 +1,10 @@
 use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+use super::super::bones::BoneKeyFrame;
+use super::super::slots::SlotKeyFrame;
+
+#[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Animation
 {

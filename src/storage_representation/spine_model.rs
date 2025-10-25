@@ -1,13 +1,13 @@
 use super::animations::Animation;
-use super::skeletons::Skeleton;
+use super::Skeleton;
 use super::bones::Bone;
 use super::slots::Slot;
-use super::skins::Skin;
+use super::Skin;
 use std::collections::HashMap;
 
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct SpineModel
 {

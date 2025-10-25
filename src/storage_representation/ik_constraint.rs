@@ -1,6 +1,6 @@
-use serde::{Serialize, Deserialize};
+use serde::Deserialize;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct IKConstraint
 {
 

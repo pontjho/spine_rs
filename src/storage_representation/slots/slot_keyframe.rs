@@ -1,5 +1,6 @@
 use serde::Deserialize;
-use crate::util::one;
+use super::SlotAttachmentKeyFrame;
+use super::SlotColourKeyFrame;
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
