@@ -19,3 +19,4 @@ mod transform_constraint;
 pub mod bones;
 pub mod attachments;
 mod slots;
+mod path_constraints;
