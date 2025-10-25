@@ -1,8 +1,8 @@
-use crate::animation::Animation;
-use crate::skeleton::Skeleton;
-use crate::bone::Bone;
-use crate::slot::Slot;
-use crate::skin::Skin;
+use super::animations::Animation;
+use super::skeletons::Skeleton;
+use super::bones::Bone;
+use super::slots::Slot;
+use super::skins::Skin;
 use std::collections::HashMap;
 
 use serde::{Serialize, Deserialize};
