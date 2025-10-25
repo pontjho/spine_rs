@@ -1,5 +1,9 @@
 use serde::{Serialize, Deserialize};
 use crate::util::one;
+use super::BoneTranslateKeyFrame;
+use super::BoneRotateKeyFrame;
+use super::BoneShearKeyFrame;
+use super::BoneScaleKeyFrame;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
@@ -13,67 +17,4 @@ pub struct BoneKeyFrame
     pub scale: Vec<BoneScaleKeyFrame>,
     #[serde(default)]
     pub shear: Vec<BoneShearKeyFrame>
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
-pub struct BoneRotateKeyFrame
-{
-    #[serde(default)]
-    pub time: f32,
-    // #[serde(default, deserialize_with="deserialize_animation_interpolation")]
-    // pub curve: AnimationInterpolation,
-    #[serde(default)]
-    #[serde(alias = "value")]
-    pub angle: f32
-}
-
-// pub enum BoneKeyFrameType
-// {
-//     Rotate,
-//     Translate,
-//     Scale,
-//     Shear
-// }
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
-pub struct BoneTranslateKeyFrame
-{
-    #[serde(default)]
-    pub time: f32,
-    // #[serde(default, deserialize_with="deserialize_animation_interpolation")]
-    // pub curve: AnimationInterpolation,
-    #[serde(default)]
-    pub x: f32,
-    #[serde(default)]
-    pub y: f32
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
-pub struct BoneScaleKeyFrame
-{
-    #[serde(default)]
-    pub time: f32,
-    // #[serde(default, deserialize_with="deserialize_animation_interpolation")]
-    // pub curve: AnimationInterpolation,
-    #[serde(default="one")]
-    pub x: f32,
-    #[serde(default="one")]
-    pub y: f32
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
-pub struct BoneShearKeyFrame
-{
-    #[serde(default)]
-    pub time: f32,
-    // #[serde(default, deserialize_with="deserialize_animation_interpolation")]
-    // pub curve: AnimationInterpolation,
-    #[serde(default)]
-    pub x: f32,
-    #[serde(default)]
-    pub y: f32
 }

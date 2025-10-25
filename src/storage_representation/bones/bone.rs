@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use crate::util::one;
+use super::BoneTransform;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
