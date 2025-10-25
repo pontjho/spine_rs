@@ -17,3 +17,4 @@ mod spine_model;
 mod spine_parser;
 mod transform_constraint;
 pub mod bones;
+pub mod attachments;
