@@ -1,4 +1,4 @@
-use serde::{self, Deserialize, Serializer, Deserializer};
+use serde::{self, Deserialize, Deserializer};
 
 pub fn one() -> f32
 {

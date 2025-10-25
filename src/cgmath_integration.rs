@@ -1,9 +1,8 @@
 use crate::bone::Bone;
-use cgmath::prelude::*;
 use cgmath::Vector2;
-use cgmath::Matrix3;
-use cgmath::Rad;
+use cgmath::Matrix4;
 use cgmath::Deg;
+use cgmath::Vector3;
 use crate::bone_keyframe::BoneTranslateKeyFrame;
 use crate::bone_keyframe::BoneScaleKeyFrame;
 use crate::bone_keyframe::BoneShearKeyFrame;
@@ -12,7 +11,7 @@ use crate::attachment::RegionAttachment;
 
 pub trait CGMathIntegrations
 {
-    fn get_translation(&self) -> Vector2<f32>;
+    fn get_translation(&self) -> Vector3<f32>;
     fn get_rotation(&self) -> Deg<f32>;
     fn get_scale(&self) -> Vector2<f32>;
     fn get_shear(&self) -> Vector2<f32>;
@@ -43,10 +42,10 @@ pub trait InterpolationLogic
 
 impl CGMathIntegrations for Bone
 {
-    fn get_translation(&self) -> Vector2<f32>
+    fn get_translation(&self) -> Vector3<f32>
     {
         // println!("Translation for {} is {}, {}", self.name, self.x, self.y);
-        Vector2::new(self.x, self.y)
+        Vector3::new(self.x, self.y, 0.0)
     }
 
     fn get_rotation(&self) -> Deg<f32>
@@ -67,9 +66,9 @@ impl CGMathIntegrations for Bone
 
 impl CGMathIntegrations for RegionAttachment
 {
-    fn get_translation(&self) -> Vector2<f32>
+    fn get_translation(&self) -> Vector3<f32>
     {
-        Vector2::new(self.x, self.y)
+        Vector3::new(self.x, self.y, 0.0)
     }
 
     fn get_rotation(&self) -> Deg<f32>
@@ -90,7 +89,7 @@ impl CGMathIntegrations for RegionAttachment
 
 impl RegionAttachment
 {
-    pub fn get_transform(&self, base_transform: &Matrix3<f32>, attachment_name: &str) -> Matrix3<f32>
+    pub fn get_transform(&self, base_transform: &Matrix4<f32>, _attachment_name: &str) -> Matrix4<f32>
     {
         let scale = self.get_scale();
         let rotation = self.get_rotation();
@@ -99,10 +98,10 @@ impl RegionAttachment
 
     let the_return = 
         base_transform
-            * Matrix3::from_angle_z(rotation)
-            * Matrix3::from_nonuniform_scale(scale[0], scale[1])
-            * Matrix3::from_translation(translation)
-            * Matrix3::from_scale(1.0);
+            * Matrix4::from_angle_z(rotation)
+            * Matrix4::from_nonuniform_scale(scale[0], scale[1], 1.0)
+            * Matrix4::from_translation(translation)
+            * Matrix4::from_scale(1.0);
 
         // let scale_matrix = Matrix3::from_nonuniform_scale(self.scale_x, self.scale_y);
         // let rotation_matrix = Matrix3::from_angle_z(rotation);
@@ -121,9 +120,9 @@ impl RegionAttachment
 
 impl BoneTranslateKeyFrame
 {
-    pub fn get_translation(&self) -> Vector2<f32>
+    pub fn get_translation(&self) -> Vector3<f32>
     {
-        Vector2::new(self.x, self.y)
+        Vector3::new(self.x, self.y, 1.0)
     }
 }
 
@@ -135,14 +134,14 @@ impl BoneScaleKeyFrame
     }
 }
 
-pub fn create_transform(rotation: Deg<f32>, translation: Vector2<f32>, scale: Vector2<f32>) -> Matrix3<f32>
+pub fn create_transform(rotation: Deg<f32>, translation: Vector3<f32>, scale: Vector2<f32>) -> Matrix4<f32>
 {
     let the_return = 
-            Matrix3::from_scale(1.0)
-            * Matrix3::from_angle_z(rotation)
-            * Matrix3::from_nonuniform_scale(scale[0], scale[1])
-            * Matrix3::from_translation(translation)
-            * Matrix3::from_scale(1.0);
+            Matrix4::from_scale(1.0)
+            * Matrix4::from_angle_z(rotation)
+            * Matrix4::from_nonuniform_scale(scale[0], scale[1], 1.0)
+            * Matrix4::from_translation(translation)
+            * Matrix4::from_scale(1.0);
     //println!("Creating bone {} transform from translation {:?} and rotation {:?} as {:?}", bone.name, translation, rotation, the_return);
     the_return
 }

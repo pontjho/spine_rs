@@ -1,5 +1,5 @@
 //use serde::{Serialize, Deserialize};
-use serde::{self, Serialize, Deserialize, Serializer, Deserializer};
+use serde::{self, Serialize, Deserialize, Deserializer};
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
@@ -20,7 +20,7 @@ impl Default for AnimationInterpolation
 
 pub fn deserialize_animation_interpolation<'de, D>(deserializer: D) -> Result<AnimationInterpolation, D::Error> where D: Deserializer<'de>,
 {
-    let s = String::deserialize(deserializer)?;
+    let _s = String::deserialize(deserializer)?;
     //Utc.datetime_from_str(&s, FORMAT).map_err(serde::de::Error::custom)
     Ok(AnimationInterpolation::Linear)
 }

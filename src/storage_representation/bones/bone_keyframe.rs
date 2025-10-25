@@ -1,5 +1,3 @@
-use crate::animation_interpolation::AnimationInterpolation;
-use crate::animation_interpolation::deserialize_animation_interpolation;
 use serde::{Serialize, Deserialize};
 use crate::util::one;
 
@@ -17,14 +15,6 @@ pub struct BoneKeyFrame
     pub shear: Vec<BoneShearKeyFrame>
 }
 
-// pub enum BoneKeyFrameType
-// {
-//     Rotate,
-//     Translate,
-//     Scale,
-//     Shear
-// }
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct BoneRotateKeyFrame
@@ -37,6 +27,14 @@ pub struct BoneRotateKeyFrame
     #[serde(alias = "value")]
     pub angle: f32
 }
+
+// pub enum BoneKeyFrameType
+// {
+//     Rotate,
+//     Translate,
+//     Scale,
+//     Shear
+// }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]

@@ -1,19 +1,6 @@
-pub mod animation_interpolation;
-pub mod animation;
-pub mod attachment;
-pub mod bone_keyframe;
-pub mod bone;
-pub mod cgmath_integration;
-pub mod draw_order_keyframe;
-pub mod event;
-pub mod ik_constraint;
-pub mod path_constraint;
-pub mod skeleton;
-pub mod skin;
-pub mod slot_keyframe;
-pub mod slot;
-pub mod spine_manager;
-pub mod spine_model;
-pub mod spine_parser;
-pub mod transform_constraint;
-pub mod util;
+
+mod util;
+
+mod bounding_box;
+mod concrete_spine_manager;
+mod storage_representation;

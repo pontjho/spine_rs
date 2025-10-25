@@ -1,4 +1,3 @@
-use crate::attachment::Attachment;
 use crate::attachment::AttachmentType;
 use std::collections::HashMap;
 
