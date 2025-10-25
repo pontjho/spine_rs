@@ -2,7 +2,7 @@ use std::{cmp::Ordering, collections::HashMap};
 
 use cgmath::Matrix4;
 
-use crate::{animation_utilities::{model_image::ModelImage, spine_animation_helper::SpineAnimationHelper, spine_manager::SpineManager, spine_vertex::SpineVertex}, storage_representation::{animations::Animation, attachments::AttachmentType, bones::BoneKeyFrame, slots::SlotKeyFrame, SpineModel}};
+use crate::{animation_utilities::{model_image::ModelImage, spine_animation_helper::SpineAnimationHelper, spine_manager::{dimensions_as_vertices, SpineManager}, spine_vertex::SpineVertex}, storage_representation::{animations::Animation, attachments::AttachmentType, bones::BoneKeyFrame, slots::SlotKeyFrame, SpineModel}};
 
 pub struct ConcreteSpineManager
 {
@@ -64,7 +64,7 @@ impl ConcreteSpineManager
         let attachment_transforms = active_attachments
             .into_iter()
             .filter_map(|(bone_name, attachment_name, attachment)| match attachment {
-                Region(a) => {
+                AttachmentType::Region(a) => {
                     let bone_transform: Matrix4<f32> = bone_global_transforms[&bone_name];
                     let attachment_transform: Matrix4<f32> = a.get_transform(&bone_transform, &attachment_name);
                     let image_dimensions = (a.width, a.height);
@@ -79,15 +79,6 @@ impl ConcreteSpineManager
 
     fn get_attachment_images(&self, attachment_transforms: Vec<(String, Matrix4<f32>, (f32, f32))>) -> Vec<ModelImage>
     {
-        // const UVS_CLOCKWISE: [(f32, f32); 6] = [
-        //     (0., 0.),
-        //     (1., 0.),
-        //     (1., 1.),
-        //     (0., 1.),
-        //     //Junk below
-        //     (1., 1.),
-        //     (0., 1.)
-        // ];
         const INDICES: [u32; 6] = [0, 1, 4, 1, 3, 4];
         let images = attachment_transforms
             .into_iter()

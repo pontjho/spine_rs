@@ -1,3 +1,7 @@
+use cgmath::Vector3;
+
+use crate::{animation_utilities::interpolation::Interpolatable, storage_representation::bones::BoneTranslateKeyFrame};
+
 impl Interpolatable for BoneTranslateKeyFrame
 {
     type Value = Vector3<f32>;

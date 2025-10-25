@@ -1,3 +1,5 @@
+use crate::animation_utilities::interpolation::Interpolatable;
+
 pub fn interpolate<T>(time: f32, items: &Vec<T>) -> T::Value where T: Interpolatable, T: core::fmt::Debug//, R: std::ops::Mul<f32>
 {
     let translation_far_index = items.iter().filter(|v| v.time() <= time).count();

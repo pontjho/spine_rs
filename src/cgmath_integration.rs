@@ -1,13 +1,14 @@
-use crate::bone::Bone;
 use cgmath::Vector2;
 use cgmath::Matrix4;
 use cgmath::Deg;
 use cgmath::Vector3;
-use crate::bone_keyframe::BoneTranslateKeyFrame;
-use crate::bone_keyframe::BoneScaleKeyFrame;
-use crate::bone_keyframe::BoneShearKeyFrame;
-use crate::bone_keyframe::BoneRotateKeyFrame;
-use crate::attachment::RegionAttachment;
+
+use crate::storage_representation::attachments::RegionAttachment;
+use crate::storage_representation::bones::Bone;
+use crate::storage_representation::bones::BoneRotateKeyFrame;
+use crate::storage_representation::bones::BoneScaleKeyFrame;
+use crate::storage_representation::bones::BoneShearKeyFrame;
+use crate::storage_representation::bones::BoneTranslateKeyFrame;
 
 pub trait CGMathIntegrations
 {
