@@ -48,11 +48,6 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
             .unwrap_or((bone.get_rotation(), bone.get_translation(), bone.get_scale()));
             //.unwrap_or(Matrix3::from_angle_z(bone.get_rotation()) * Matrix3::from_nonuniform_scale(bone.scale_x, bone.scale_y) * Matrix3::from_translation(bone.get_translation()));
 
-        if bone.name == "root"
-        {
-            //println!("+++++++++++++{} {:?} {:?} {:?}", time, rotation, translation, scale)
-        }
-
         let the_return = create_transform(rotation, translation, scale);
 
         the_return
@@ -62,7 +57,6 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
     {
         animation.slots.get(&slot.name)
             .map(|SlotKeyFrame { attachment: animation_slots, colour: _ }| {
-                // println!("Anim {} {:?} --- {:?} ---", time, animation_slots, slot.attachment);
 
                 let the_return = animation_slots
                     .iter()
@@ -72,7 +66,6 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
                     .unwrap_or(&slot.attachment)
                     .clone();
 
-                // println!("And the winner is {:?}", the_return);
                 the_return
             })
             .unwrap_or(slot.attachment.clone())

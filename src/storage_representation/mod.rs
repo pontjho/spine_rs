@@ -14,3 +14,4 @@ pub use skeleton::Skeleton;
 pub use skin::Skin;
 pub use spine_model::SpineModel;
 pub use ik_constraint::IKConstraint;
+pub use concrete_spine_parser::ConcreteSpineParser;

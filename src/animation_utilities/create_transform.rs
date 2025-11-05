@@ -10,6 +10,5 @@ pub fn create_transform(rotation: Deg<f32>, translation: Vector3<f32>, scale: Ve
             * Matrix4::from_nonuniform_scale(scale[0], scale[1], 1.0)
             * Matrix4::from_translation(translation)
             * Matrix4::from_scale(1.0);
-    //println!("Creating bone {} transform from translation {:?} and rotation {:?} as {:?}", bone.name, translation, rotation, the_return);
     the_return
 }

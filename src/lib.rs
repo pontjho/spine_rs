@@ -2,8 +2,8 @@
 mod util;
 
 mod bounding_box;
-mod storage_representation;
-mod animation_utilities;
+pub mod storage_representation;
+pub mod animation_utilities;
 mod spine_parser;
 mod cgmath_integration;
 

@@ -55,7 +55,6 @@ impl ConcreteSpineManager
             .filter_map(|(slot_name, bone_name, attachment_name)| attachment_name.map(|aname| (slot_name, bone_name, aname)))
             .map(|(slot_name, bone_name, attachment_name)| (bone_name, attachment_name.clone(), skin_attachments[&slot_name][&attachment_name].clone()))
             .collect();
-        //println!("{:?}", active_attachments);
         active_attachments
     }
 

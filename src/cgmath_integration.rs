@@ -30,7 +30,6 @@ impl CGMathIntegrations for Bone
 {
     fn get_translation(&self) -> Vector3<f32>
     {
-        // println!("Translation for {} is {}, {}", self.name, self.x, self.y);
         Vector3::new(self.x, self.y, 0.0)
     }
 
