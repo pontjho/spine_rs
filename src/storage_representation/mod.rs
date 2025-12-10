@@ -9,9 +9,11 @@ mod skin;
 mod spine_model;
 mod ik_constraint;
 mod concrete_spine_parser;
+mod event;
 
 pub use skeleton::Skeleton;
 pub use skin::Skin;
 pub use spine_model::SpineModel;
 pub use ik_constraint::IKConstraint;
 pub use concrete_spine_parser::ConcreteSpineParser;
+pub use event::Event;

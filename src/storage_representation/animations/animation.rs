@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use serde::Deserialize;
 
+use crate::storage_representation::animations::TimelineEvent;
+
 use super::super::bones::BoneKeyFrame;
 use super::super::slots::SlotKeyFrame;
 
@@ -13,6 +15,9 @@ pub struct Animation
 
     #[serde(default)]
     pub slots: HashMap<String, SlotKeyFrame>,
+
+    #[serde(default)]
+    pub events: Vec<TimelineEvent>
     //ik: HashMap<String, BoneKeyFrame>,
     //deform: HashMap<String, BoneKeyFrame>,
     //events: HashMap<String, BoneKeyFrame>,

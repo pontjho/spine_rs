@@ -3,6 +3,7 @@ use super::Skeleton;
 use super::bones::Bone;
 use super::slots::Slot;
 use super::Skin;
+use super::Event;
 use std::collections::HashMap;
 
 use serde::Deserialize;
@@ -18,5 +19,14 @@ pub struct SpineModel
     #[serde(default)]
     pub skins: Vec<Skin>,
     #[serde(default)]
-    pub animations: HashMap<String, Animation>
+    pub animations: HashMap<String, Animation>,
+    #[serde(default)]
+    pub events: HashMap<String, Event>
+}
+impl SpineModel {
+    pub fn get_animations<'a>(&'a self, animation_ids: Vec<usize>) -> Vec<&'a Animation> {
+        
+        let animations: Vec<_> = animation_ids.into_iter().map(|animation_id| self.animations.iter().nth(animation_id).unwrap().1).collect();
+        animations
+    }
 }

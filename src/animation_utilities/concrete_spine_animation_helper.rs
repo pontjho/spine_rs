@@ -1,7 +1,8 @@
 use cgmath::{Matrix4, Vector2};
 
-use crate::{animation_utilities::{interpolation::interpolate, spine_animation_helper::SpineAnimationHelper}, cgmath_integration::CGMathIntegrations, storage_representation::{animations::Animation, bones::{Bone, BoneKeyFrame}, slots::{Slot, SlotKeyFrame}}};
+use crate::{animation_utilities::{interpolation::interpolate, spine_animation_helper::SpineAnimationHelper}, cgmath_integration::CGMathIntegrations, storage_representation::{SpineModel, animations::Animation, bones::{Bone, BoneKeyFrame}, slots::{Slot, SlotKeyFrame}}};
 use crate::animation_utilities::create_transform::create_transform;
+use crate::storage_representation::Event;
 
 pub struct ConcreteSpineAnimationHelper
 {
@@ -69,5 +70,21 @@ impl SpineAnimationHelper for ConcreteSpineAnimationHelper
                 the_return
             })
             .unwrap_or(slot.attachment.clone())
+    }
+
+    fn get_events(&self, model: &SpineModel, animation: &Animation, time: f32, duration: f32) -> Vec<Event>
+    {
+        let events = animation.events.iter().filter(|e| e.time >= time && e.time <= e.time + duration)
+            .map(|e| (e, &model.events[&e.name]))
+            .map(|(e, e_base)| Event {
+                int_value: e.int_value.unwrap_or(e_base.int_value),
+                float_value: e.float_value.unwrap_or(e_base.float_value),
+                string_value: e.string_value.as_ref().unwrap_or(&e_base.string_value).clone(),
+                audio: e.audio.iter().chain(&e_base.audio).cloned().next(),
+                volume: e.volume.unwrap_or(e_base.volume),
+                balance: e.balance.unwrap_or(e_base.balance)
+            })
+            .collect();
+        events
     }
 }
